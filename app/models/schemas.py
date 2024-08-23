@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List, Union
 
-from pydantic import BaseModel,field_validator
+from pydantic import BaseModel, field_validator
 
 
 class User(BaseModel):
@@ -17,14 +17,21 @@ class User(BaseModel):
             raise ValueError('Нельзя присваивать полю id отрицательное значение')
         return v
 
-# TODO: доделать валидацию
-    # @field_validator('First_name')
-    # def check_first_name(cls, v):
+    @staticmethod
+    def contains_digit(s):
+        return any(char.isdigit() for char in s)
 
-    #     if (any(char.isdigit() for char in v)):
-    #         raise ValueError('First_name не может содержать цифры')
 
-    # @field_validator('First_name')
-    # def check_Last_name(cls, v):
-    #     if any(char.isdigit() for char in v):
-    #         raise ValueError('Last_name не может содержать цифры')
+    @field_validator('First_name')
+    def check_first_name(cls, v):
+
+        if (cls.contains_digit(v)):
+            raise ValueError('First_name не может содержать цифры')
+        return v
+
+    @field_validator('Last_name')
+    def check_Last_name(cls, v):
+        if cls.contains_digit(v):
+            raise ValueError('Last_name не может содержать цифры')
+
+        return v
