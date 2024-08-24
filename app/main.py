@@ -1,5 +1,5 @@
 
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, BackgroundTasks
 from fastapi.responses import FileResponse
 from models.schemas import User, Item, Person
 from typing import Annotated
@@ -74,3 +74,19 @@ async def search_product(keyword: str, category: str | None = None, limit: int |
     if limit is not None:
         search_answer = search_answer[:limit]
     return search_answer
+
+
+def write_notification(email: str, message=""):
+
+
+    with open("log.txt", mode="a") as email_file:
+        content = f"\n notification for {email}: {message}"
+        email_file.write(content)
+
+@app.post("/send-notification/{email}")
+async def send_notification(email: str, background_tasks: BackgroundTasks):
+    if not Person.is_valid_email(email):
+        return {"message": "Email is not valid"}
+    else:
+        background_tasks.add_task(write_notification, email, message="some notification")
+        return {"message": "Notification sent in the background"}
