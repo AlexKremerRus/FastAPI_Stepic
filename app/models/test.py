@@ -13,4 +13,3 @@ print(is_valid_email("a@a.ff.fru "))
 print(is_valid_email("aa.ru.ru"))
 print(is_valid_email("@a.ru.ru"))
 
-ddd

@@ -79,4 +79,10 @@ class Person(BaseModel):
             raise ValueError('email не соответствует требованиям')
         return v
 
+
+class SampleProduct(BaseModel):
+    product_id: int
+    name: str
+    category: str
+    price: float
     

@@ -3,6 +3,7 @@ from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import FileResponse
 from models.schemas import User, Item, Person
 from typing import Annotated
+from models.sample import sample_products
 
 app = FastAPI()
 
@@ -54,3 +55,11 @@ async def test_query(query_param: str):
 @app.post("/create_person_v1")
 async def create_person(person: Person):
     return f"{person.username} - подписан? - {person.is_subscribed}"
+
+@app.get("/products/{product_id}")
+async def get_product(product_id: int):
+    for product in sample_products:
+        if product["product_id"] == product_id:
+            return product
+    else:
+        return {"message": "Такого продукта нет"}
