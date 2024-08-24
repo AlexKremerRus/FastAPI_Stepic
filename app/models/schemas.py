@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List, Union
 
 from pydantic import BaseModel, field_validator
-
+import re
 
 class User(BaseModel):
     id: int
@@ -43,3 +43,40 @@ class Item(BaseModel):
     price: float
     tax: float | None = None
     tags: list[str] = []
+
+class Person(BaseModel):
+    username: str
+    enail: str | None = None
+    age: int | None = None
+    is_subscribed : bool = False
+
+    @staticmethod
+    def is_valid_email(email: str) -> bool:
+    # Регулярное выражение для проверки email-адреса
+        email_regex = re.compile(
+            r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
+    )
+        return re.match(email_regex, email) is not None
+
+
+    # @field_validator('username')
+    # def check_username(cls, v):
+    #     if v.isalnum():
+    #         raise ValueError('username не может содержать цифры')
+    #     return v
+
+    @field_validator('age')
+    def check_age(cls, v):
+        if v < 0:
+            raise ValueError('age не может быть отрицательным')
+        elif v>100:
+            raise ValueError('age не может быть больше 100')
+        return v
+
+    @field_validator('enail')
+    def check_enail(cls, v):
+        if not cls.is_valid_email(v):
+            raise ValueError('email не соответствует требованиям')
+        return v
+
+    

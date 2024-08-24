@@ -1,7 +1,7 @@
 
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import FileResponse
-from models.schemas import User, Item
+from models.schemas import User, Item, Person
 from typing import Annotated
 
 app = FastAPI()
@@ -47,5 +47,10 @@ async def create_upload_file(file: UploadFile):
     return {"filename": file.filename}
 
 @app.get("/test/query")
-def test_query(query_param: str):
+async def test_query(query_param: str):
     return {"message": f"Hello World {query_param}"}
+
+
+@app.post("/create_person_v1")
+async def create_person(person: Person):
+    return f"{person.username} - подписан? - {person.is_subscribed}"
