@@ -35,3 +35,11 @@ class User(BaseModel):
             raise ValueError('Last_name не может содержать цифры')
 
         return v
+
+
+class Item(BaseModel):
+    name: str
+    description: str | None = None
+    price: float
+    tax: float | None = None
+    tags: list[str] = []
