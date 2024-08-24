@@ -63,3 +63,14 @@ async def get_product(product_id: int):
             return product
     else:
         return {"message": "Такого продукта нет"}
+
+@app.get("/get_products_search")
+async def search_product(keyword: str, category: str | None = None, limit: int | None = None):
+    search_answer = []
+    for product in sample_products:
+        if keyword.lower() in product["name"].lower():
+            if category is None or product["category"] == category:
+                search_answer.append(product)
+    if limit is not None:
+        search_answer = search_answer[:limit]
+    return search_answer
