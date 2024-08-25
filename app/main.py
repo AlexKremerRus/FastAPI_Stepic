@@ -1,9 +1,10 @@
 
-from fastapi import FastAPI, File, UploadFile, BackgroundTasks
+from fastapi import FastAPI, File, UploadFile, BackgroundTasks, Cookie, Response
 from fastapi.responses import FileResponse
 from models.schemas import User, Item, Person
 from typing import Annotated
 from models.sample import sample_products
+from datetime import datetime
 
 app = FastAPI()
 
@@ -77,8 +78,6 @@ async def search_product(keyword: str, category: str | None = None, limit: int |
 
 
 def write_notification(email: str, message=""):
-
-
     with open("log.txt", mode="a") as email_file:
         content = f"\n notification for {email}: {message}"
         email_file.write(content)
@@ -90,3 +89,13 @@ async def send_notification(email: str, background_tasks: BackgroundTasks):
     else:
         background_tasks.add_task(write_notification, email, message="some notification")
         return {"message": "Notification sent in the background"}
+@app.get("/cookie")
+async def read_items_cookie(ads_id: str | None = Cookie(default=None)):
+    return {"ads_id": ads_id}
+
+@app.get("/cookie_set")
+async def root(response: Response):
+    now = datetime.now().strftime("%d/%m/%Y, %H:%M:%S")   # получаем текущую дату и время
+    response.set_cookie(key="last_visit", value=now)
+    return  {"message": "куки установлены", "last_visit": now, "response": response}
+
