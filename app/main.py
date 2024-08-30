@@ -1,5 +1,5 @@
 
-from fastapi import FastAPI, File, UploadFile, BackgroundTasks, Cookie, Response
+from fastapi import FastAPI, File, UploadFile, BackgroundTasks, Cookie, Response, Header
 from fastapi.responses import FileResponse
 from models.schemas import User, Item, Person
 from typing import Annotated
@@ -99,3 +99,25 @@ async def root(response: Response):
     response.set_cookie(key="last_visit", value=now)
     return  {"message": "куки установлены", "last_visit": now, "response": response}
 
+@app.get("/annotation_test_headers_v1")
+async def read_items_with_headers(user_agent: Annotated[str | None, Header()]= None):
+    return {"User-Agent": user_agent}
+
+@app.get("/annotation_test_headers_v2")
+async def read_items_with_headers(test_agent_1: Annotated[str | None, Header()]= None):
+    return {"User-Agent": test_agent_1}
+
+@app.get("/get_headers_v1")
+async def get_headers(user_agent: str = Header()):
+    return {"User-Agent": user_agent}
+
+@app.get("/response_headers_v1")
+async def get_headers_response():
+    data = "hello"
+    response = Response(content=data, headers={"Content-Length": str(len(data)), "Secret-Code":"123456"}, media_type="text/plain")
+    return response
+
+@app.get("/set_response_v1")
+async def set_response(response: Response):
+    response.headers["secret"] = "test"
+    return {"message": "test message"}
