@@ -1,3 +1,5 @@
+from .schemas import Autorization
+
 sample_product_1 = {
     "product_id": 123,
     "name": "Smartphone",
@@ -34,3 +36,5 @@ sample_product_5 = {
 }
 
 sample_products = [sample_product_1, sample_product_2, sample_product_3, sample_product_4, sample_product_5]
+
+USER_DATA = [Autorization(**{"login": "user1", "password": "pass1"}), Autorization(**{"login": "user2", "password": "pass2"})]

@@ -85,4 +85,8 @@ class SampleProduct(BaseModel):
     name: str
     category: str
     price: float
-    
+
+class Autorization(BaseModel):
+    login: str
+    password: str
+

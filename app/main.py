@@ -1,6 +1,7 @@
 
-from fastapi import FastAPI, File, UploadFile, BackgroundTasks, Cookie, Response, Header
+from fastapi import FastAPI, File, UploadFile, BackgroundTasks, Cookie, Response, Header, Depends, status, HTTPException
 from fastapi.responses import FileResponse
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from models.schemas import User, Item, Person
 from typing import Annotated
 from models.sample import sample_products
