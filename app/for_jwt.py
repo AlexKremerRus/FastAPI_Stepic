@@ -1,10 +1,10 @@
 import jwt # тут используем библиотеку PyJWT
-
+import datetime
 
 # Секретный ключ для подписи и верификации токенов JWT
 SECRET_KEY = "mysecretkey" # тут мы в реальной практике используем что-нибудь вроде команды Bash (Linux) 'openssl rand -hex 32', и храним очень защищенно
 ALGORITHM = "HS256" # плюс в реальной жизни мы устанавливаем "время жизни" токена
-
+EXPIRE_MINUTES = 30
 # Пример информации из БД
 USERS_DATA = [
     {"username": "admin", "password": "adminpass"}
@@ -12,9 +12,16 @@ USERS_DATA = [
 
 
 # Функция для создания JWT токена
-def create_jwt_token(data: dict):
-    return jwt.encode(data, SECRET_KEY, algorithm=ALGORITHM) # кодируем токен, передавая в него наш словарь с тем, что мы хотим там разместить
+def create_jwt_token(data: dict, expires_delta: datetime.timedelta = None):
 
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.datetime.utcnow() + datetime.timedelta(minutes=EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
 
 # Функция получения User'а по токену
 def get_user_from_token(token: str):
